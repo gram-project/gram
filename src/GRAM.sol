@@ -5,15 +5,18 @@ import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract GRAM is ERC20Permit {
-    address private constant XAUT = 0x68749665FF8D2d112Fa859AA293F07A622782F38;
-    address private constant TREASURY = 0x300Df392cE8910E0E4D42C6ecb9bA1a8b19bAdF0;
+    address private immutable XAUT;
+    address private immutable TREASURY;
 
     uint256 private constant CONVERSION_RATE = 31103476800000000000;
     uint256 private constant XAUT_DECIMALS = 8;
     uint256 private constant FEE_BASIS_POINTS = 50;
     uint256 private constant FEE_DENOMINATOR = 10000;
 
-    constructor() ERC20Permit("GRAM") ERC20("GRAM", "GRAM") {}
+    constructor(address xaut, address treasury) ERC20Permit("GRAM") ERC20("GRAM", "GRAM") {
+        XAUT = xaut;
+        TREASURY = treasury;
+    }
 
     function mint(uint256 xautAmount) external {
         uint256 grossGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
