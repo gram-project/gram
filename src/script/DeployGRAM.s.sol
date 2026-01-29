@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {Script} from "@forge-std/Script.sol";
+import {Script} from "forge-std/Script.sol";
 import {GRAM} from "../GRAM.sol";
 
 contract DeployGRAM is Script {
