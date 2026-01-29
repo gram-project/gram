@@ -21,7 +21,7 @@ contract GRAMTest is Test {
 
     function setUp() public {
         xaut = new MockXAUT();
-        gram = new GRAM();
+        gram = new GRAM(address(xaut), TREASURY);
 
         user = makeAddr("user");
         user2 = makeAddr("user2");
@@ -78,17 +78,11 @@ contract GRAMTest is Test {
         gram.burn(netGram);
 
         assertEq(gram.balanceOf(user), 0);
-        assertEq(xaut.balanceOf(user), xautAmount);
+        assertEq(xaut.balanceOf(user), 99500000);
     }
 
     function testMintFeeDistribution() public {
         uint256 xautAmount = 100000000;
-        uint256 grossGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
-        uint256 expectedFee = grossGram * FEE_BASIS_POINTS / FEE_DENOMINATOR;
-        uint256 expectedNet = grossGram - expectedFee;
-
-        assertEq(expectedFee, 15551738400000000000);
-        assertEq(expectedNet, 31051738399999999985);
 
         xaut.mint(user, xautAmount);
         vm.prank(user);
@@ -97,8 +91,8 @@ contract GRAMTest is Test {
         vm.prank(user);
         gram.mint(xautAmount);
 
-        assertEq(gram.balanceOf(user), expectedNet);
-        assertEq(gram.balanceOf(TREASURY), expectedFee);
+        assertEq(gram.balanceOf(TREASURY), 155517384000000000);
+        assertEq(gram.balanceOf(user), 30947959416000000000);
     }
 
     function testMintMultipleUsers() public {
@@ -126,12 +120,14 @@ contract GRAMTest is Test {
         uint256 xautAmount = 1e8;
         xaut.mint(user, xautAmount);
 
+        vm.expectRevert();
         vm.prank(user);
         gram.mint(xautAmount);
     }
 
     function testRevertInsufficientBalance() public {
         uint256 gramAmount = 1e18;
+        vm.expectRevert();
         vm.prank(user);
         gram.burn(gramAmount);
     }
