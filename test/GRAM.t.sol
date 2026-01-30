@@ -229,4 +229,16 @@ contract GRAMTest is Test {
         assertEq(gram.balanceOf(user), 0);
         assertGe(xaut.balanceOf(user), 0);
     }
+
+    function testUpdateDecimals() public {
+        assertEq(gram.XAUT_DECIMALS(), 8);
+        gram.updateDecimals();
+        assertEq(gram.XAUT_DECIMALS(), 8);
+    }
+
+    function testUpdateDecimalsPermissionless() public {
+        vm.prank(user2);
+        gram.updateDecimals();
+        assertEq(gram.XAUT_DECIMALS(), 8);
+    }
 }
