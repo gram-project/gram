@@ -12,7 +12,7 @@ contract GRAM is ERC20Permit {
     address private immutable TREASURY;
 
     uint256 private constant CONVERSION_RATE = 31103476800000000000;
-    uint256 private constant XAUT_DECIMALS = 8;
+    uint256 public XAUT_DECIMALS = 8;
     uint256 private constant FEE_BASIS_POINTS = 5;
     uint256 private constant FEE_DENOMINATOR = 10000;
 
@@ -52,5 +52,11 @@ contract GRAM is ERC20Permit {
         _burn(msg.sender, gramAmount);
         IERC20(XAUT).safeTransfer(msg.sender, xautAmount);
         emit Burn(msg.sender, gramAmount, xautAmount);
+    }
+
+    /// @notice Updates XAUT_DECIMALS by fetching from the XAUT token
+    /// @dev Permissionless function callable by anyone
+    function updateDecimals() external {
+        XAUT_DECIMALS = ERC20(XAUT).decimals();
     }
 }
