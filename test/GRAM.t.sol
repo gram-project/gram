@@ -194,7 +194,8 @@ contract GRAMTest is Test {
         uint256 gramBalance = gram.balanceOf(user);
         uint256 xautReserve = xaut.balanceOf(address(gram));
         uint256 gramSupply = gram.totalSupply();
-        assertGe(xautReserve, gramSupply);
+        uint256 expectedXautBacking = gramSupply * 1e8 / CONVERSION_RATE;
+        assertGe(xautReserve, expectedXautBacking);
         vm.prank(user);
         gram.burn(gramBalance);
         assertGe(xaut.balanceOf(user), 0);
