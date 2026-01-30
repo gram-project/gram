@@ -44,7 +44,7 @@ contract GRAMTest is Test {
 
     function testMintConversion() public {
         uint256 xautAmount = 1e8;
-        uint256 expectedGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+        uint256 expectedGram = xautAmount * CONVERSION_RATE / 10 ** XAUT_DECIMALS;
 
         assertEq(expectedGram, 31103476800000000000);
 
@@ -65,7 +65,7 @@ contract GRAMTest is Test {
 
     function testBurnConversion() public {
         uint256 xautAmount = 1e8;
-        uint256 gramAmount = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+        uint256 gramAmount = xautAmount * CONVERSION_RATE / 10 ** XAUT_DECIMALS;
 
         xaut.mint(user, xautAmount);
         vm.prank(user);
@@ -147,7 +147,7 @@ contract GRAMTest is Test {
 
     function testMintEvent() public {
         uint256 xautAmount = 1e8;
-        uint256 expectedGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+        uint256 expectedGram = xautAmount * CONVERSION_RATE / 10 ** XAUT_DECIMALS;
         uint256 fee = expectedGram * FEE_BASIS_POINTS / FEE_DENOMINATOR;
 
         xaut.mint(user, xautAmount);
@@ -163,7 +163,7 @@ contract GRAMTest is Test {
 
     function testBurnEvent() public {
         uint256 xautAmount = 1e8;
-        uint256 gramAmount = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+        uint256 gramAmount = xautAmount * CONVERSION_RATE / 10 ** XAUT_DECIMALS;
 
         xaut.mint(user, xautAmount);
         vm.prank(user);
@@ -174,7 +174,7 @@ contract GRAMTest is Test {
 
         uint256 fee = gramAmount * FEE_BASIS_POINTS / FEE_DENOMINATOR;
         uint256 netGram = gramAmount - fee;
-        uint256 expectedXaut = (netGram * 10**XAUT_DECIMALS + CONVERSION_RATE - 1) / CONVERSION_RATE;
+        uint256 expectedXaut = (netGram * 10 ** XAUT_DECIMALS + CONVERSION_RATE - 1) / CONVERSION_RATE;
 
         vm.expectEmit();
         emit Burn(user, netGram, expectedXaut);
@@ -228,17 +228,5 @@ contract GRAMTest is Test {
         gram.burn(gramBalance);
         assertEq(gram.balanceOf(user), 0);
         assertGe(xaut.balanceOf(user), 0);
-    }
-
-    function testUpdateDecimals() public {
-        assertEq(gram.XAUT_DECIMALS(), 8);
-        gram.updateDecimals();
-        assertEq(gram.XAUT_DECIMALS(), 8);
-    }
-
-    function testUpdateDecimalsPermissionless() public {
-        vm.prank(user2);
-        gram.updateDecimals();
-        assertEq(gram.XAUT_DECIMALS(), 8);
     }
 }

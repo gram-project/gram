@@ -12,7 +12,6 @@ contract GRAM is ERC20Permit {
     address private immutable TREASURY;
 
     uint256 private constant CONVERSION_RATE = 31103476800000000000;
-    uint256 public XAUT_DECIMALS = 8;
     uint256 private constant FEE_BASIS_POINTS = 5;
     uint256 private constant FEE_DENOMINATOR = 10000;
 
@@ -32,7 +31,7 @@ contract GRAM is ERC20Permit {
     /// @dev Fee of 0.05% goes to TREASURY address
     function mint(uint256 xautAmount) external {
         if (xautAmount == 0) revert ZeroMint();
-        uint256 grossGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+        uint256 grossGram = xautAmount * CONVERSION_RATE / 10 ** ERC20(XAUT).decimals();
         uint256 fee = grossGram * FEE_BASIS_POINTS / FEE_DENOMINATOR;
         uint256 netGram = grossGram - fee;
 
@@ -47,16 +46,10 @@ contract GRAM is ERC20Permit {
     /// @dev Uses floor division to ensure protocol solvency
     function burn(uint256 gramAmount) external {
         if (gramAmount == 0) revert ZeroBurn();
-        uint256 xautAmount = gramAmount * 10**XAUT_DECIMALS / CONVERSION_RATE;
+        uint256 xautAmount = gramAmount * 10 ** ERC20(XAUT).decimals() / CONVERSION_RATE;
 
         _burn(msg.sender, gramAmount);
         IERC20(XAUT).safeTransfer(msg.sender, xautAmount);
         emit Burn(msg.sender, gramAmount, xautAmount);
-    }
-
-    /// @notice Updates XAUT_DECIMALS by fetching from the XAUT token
-    /// @dev Permissionless function callable by anyone
-    function updateDecimals() external {
-        XAUT_DECIMALS = ERC20(XAUT).decimals();
     }
 }

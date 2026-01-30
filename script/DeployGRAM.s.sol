@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Script} from "forge-std/Script.sol";
-import {GRAM} from "../GRAM.sol";
+import {GRAM} from "../src/GRAM.sol";
 
 contract DeployGRAM is Script {
     address constant XAUT = 0x68749665FF8D2d112Fa859AA293F07A622782F38;
