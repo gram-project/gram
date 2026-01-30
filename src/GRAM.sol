@@ -25,6 +25,7 @@ contract GRAM is ERC20Permit {
     }
 
     function mint(uint256 xautAmount) external {
+        if (xautAmount == 0) revert ZeroMint();
         uint256 grossGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
         uint256 fee = grossGram * FEE_BASIS_POINTS / FEE_DENOMINATOR;
         uint256 netGram = grossGram - fee;
