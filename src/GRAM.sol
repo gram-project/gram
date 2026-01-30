@@ -24,6 +24,9 @@ contract GRAM is ERC20Permit {
         TREASURY = treasury;
     }
 
+    /// @notice Converts XAUT to GRAM (Troy oz to grams)
+    /// @param xautAmount Amount of XAUT in base units (8 decimals)
+    /// @dev Fee of 0.5% goes to TREASURY address
     function mint(uint256 xautAmount) external {
         if (xautAmount == 0) revert ZeroMint();
         uint256 grossGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
@@ -36,6 +39,9 @@ contract GRAM is ERC20Permit {
         emit Mint(msg.sender, xautAmount, grossGram, fee);
     }
 
+    /// @notice Converts GRAM to XAUT (grams to Troy oz)
+    /// @param gramAmount Amount of GRAM in base units (18 decimals)
+    /// @dev Uses floor division to ensure protocol solvency
     function burn(uint256 gramAmount) external {
         if (gramAmount == 0) revert ZeroBurn();
         uint256 xautAmount = gramAmount * 10**XAUT_DECIMALS / CONVERSION_RATE;
