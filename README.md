@@ -1,66 +1,79 @@
-## Foundry
+# GRAM
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+GRAM is a trustless ERC20 token representing gold denomination in grams, backed 1:1 by XAUT (Tether Gold). The contract enables projects from Dwarf Systems to integrate gold-backed tokens with gram precision without counterparty risk.
 
-Foundry consists of:
+## Architecture
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+The GRAM contract is immutable with no administrative control:
 
-## Documentation
+- No ownership (Ownable, AccessControl)
+- No upgradeable proxy patterns
+- No pause or blacklist functions
+- No modifiable fee mechanism (fee is a constant)
+- No admin minting capability
 
-https://book.getfoundry.sh/
+All critical parameters are defined as constants at deployment.
 
-## Usage
+## Core Mechanics
 
-### Build
+### Minting (XAUT to GRAM)
 
-```shell
-$ forge build
+Users deposit XAUT and receive GRAM at a fixed conversion rate. A 0.05% fee is deducted and sent to the treasury.
+
+```
+1 XAUT = 31,103.4768 GRAM (1 troy oz = 31.1034768 grams per International Yard and Pound Agreement, 1959)
 ```
 
-### Test
+### Burning (GRAM to XAUT)
 
-```shell
-$ forge test
+Users burn GRAM to redeem XAUT. Floor division ensures protocol solvency.
+
+### Decimals Synchronization
+
+The `updateDecimals()` function is permissionless and fetches XAUT decimals dynamically from the token. This allows the contract to adapt if XAUT's decimal representation changes.
+
+## Parameters
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| CONVERSION_RATE | 31103476800000000000 | XAUT to GRAM multiplication factor |
+| FEE_BASIS_POINTS | 5 | 0.05% minting fee |
+| XAUT_DECIMALS | 8 | XAUT token decimals (synchronizable) |
+
+## Integration
+
+```solidity
+// Mint GRAM from XAUT
+gram.mint(xautAmount);
+
+// Burn GRAM for XAUT
+gram.burn(gramAmount);
+
+// Update XAUT decimals if needed
+gram.updateDecimals();
 ```
 
-### Format
+## Security
 
-```shell
-$ forge fmt
+The contract prioritizes trustlessness over flexibility. There are no admin keys, no upgrade mechanisms, and no emergency pauses. Users can verify the immutable nature of the contract by examining the source code.
+
+## Testing
+
+```bash
+forge test
 ```
 
-### Gas Snapshots
+Test coverage includes:
+- Mint/burn conversion accuracy
+- Fee distribution
+- Solvency invariants (fuzz tested)
+- Rounding behavior
+- Event emission
+- Access control reverts
 
-```shell
-$ forge snapshot
-```
+## Deployment
 
-### Anvil
+Mainnet addresses are configured in `src/script/DeployGRAM.s.sol`:
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- XAUT: 0x68749665FF8D2d112Fa859AA293F07A622782F38
+- TREASURY: 0x300Df392cE8910E0E4D42C6ecb9bA1a8b19bAdF0
