@@ -64,7 +64,7 @@ The contract prioritizes trustlessness over flexibility. There are no admin keys
 ## Testing
 
 ```bash
-forge test
+forge test --gas-report --optimize --optimizer-runs 1000000
 ```
 
 Test coverage includes:
@@ -76,6 +76,8 @@ Test coverage includes:
 - Access control reverts
 
 ## Deployment
+
+The contract is optimized with 1000000 optimizer runs.
 
 Mainnet addresses are configured in `src/script/DeployGRAM.s.sol`:
 
