@@ -18,7 +18,7 @@ contract GRAMTest is Test {
     address public user2;
 
     uint256 private constant CONVERSION_RATE = 31103476800000000000;
-    uint256 private constant XAUT_DECIMALS = 8;
+    uint256 private constant XAUT_DECIMALS = 6;
     uint256 private constant FEE_BASIS_POINTS = 5;
     uint256 private constant FEE_DENOMINATOR = 10000;
 

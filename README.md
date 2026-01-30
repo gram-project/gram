@@ -42,7 +42,7 @@ If Tether (XAUT) exhibits behavior that compromises the trustlessness of the sys
 |-----------|-------|-------------|
 | CONVERSION_RATE | 31103476800000000000 | XAUT to GRAM multiplication factor |
 | FEE_BASIS_POINTS | 5 | 0.05% minting fee |
-| XAUT_DECIMALS | 8 | XAUT token decimals (synchronizable) |
+| XAUT_DECIMALS | 6 | XAUT token decimals (synchronizable) |
 
 ## Integration
 

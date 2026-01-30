@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract MockXAUT is ERC20 {
-    uint8 private constant DECIMALS = 8;
+    uint8 private constant DECIMALS = 6;
 
     constructor() ERC20("Tether Gold", "XAUT") {}
 
