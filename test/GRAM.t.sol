@@ -19,7 +19,7 @@ contract GRAMTest is Test {
 
     uint256 private constant CONVERSION_RATE = 31103476800000000000;
     uint256 private constant XAUT_DECIMALS = 8;
-    uint256 private constant FEE_BASIS_POINTS = 50;
+    uint256 private constant FEE_BASIS_POINTS = 5;
     uint256 private constant FEE_DENOMINATOR = 10000;
 
     function setUp() public {
@@ -81,7 +81,7 @@ contract GRAMTest is Test {
         gram.burn(netGram);
 
         assertEq(gram.balanceOf(user), 0);
-        assertEq(xaut.balanceOf(user), 99500000);
+        assertEq(xaut.balanceOf(user), 99950000);
     }
 
     function testMintFeeDistribution() public {
@@ -94,8 +94,8 @@ contract GRAMTest is Test {
         vm.prank(user);
         gram.mint(xautAmount);
 
-        assertEq(gram.balanceOf(TREASURY), 155517384000000000);
-        assertEq(gram.balanceOf(user), 30947959416000000000);
+        assertEq(gram.balanceOf(TREASURY), 15551738400000000);
+        assertEq(gram.balanceOf(user), 31087925061600000000);
     }
 
     function testMintMultipleUsers() public {

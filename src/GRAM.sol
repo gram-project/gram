@@ -13,7 +13,7 @@ contract GRAM is ERC20Permit {
 
     uint256 private constant CONVERSION_RATE = 31103476800000000000;
     uint256 private constant XAUT_DECIMALS = 8;
-    uint256 private constant FEE_BASIS_POINTS = 50;
+    uint256 private constant FEE_BASIS_POINTS = 5;
     uint256 private constant FEE_DENOMINATOR = 10000;
 
     error ZeroMint();
@@ -29,7 +29,7 @@ contract GRAM is ERC20Permit {
 
     /// @notice Converts XAUT to GRAM (Troy oz to grams)
     /// @param xautAmount Amount of XAUT in base units (8 decimals)
-    /// @dev Fee of 0.5% goes to TREASURY address
+    /// @dev Fee of 0.05% goes to TREASURY address
     function mint(uint256 xautAmount) external {
         if (xautAmount == 0) revert ZeroMint();
         uint256 grossGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
