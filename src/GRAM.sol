@@ -38,7 +38,7 @@ contract GRAM is ERC20Permit {
 
     function burn(uint256 gramAmount) external {
         if (gramAmount == 0) revert ZeroBurn();
-        uint256 xautAmount = (gramAmount * 10**XAUT_DECIMALS + CONVERSION_RATE - 1) / CONVERSION_RATE;
+        uint256 xautAmount = gramAmount * 10**XAUT_DECIMALS / CONVERSION_RATE;
 
         _burn(msg.sender, gramAmount);
         IERC20(XAUT).transfer(msg.sender, xautAmount);
