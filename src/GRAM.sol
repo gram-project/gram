@@ -13,6 +13,12 @@ contract GRAM is ERC20Permit {
     uint256 private constant FEE_BASIS_POINTS = 50;
     uint256 private constant FEE_DENOMINATOR = 10000;
 
+    error ZeroMint();
+    error ZeroBurn();
+
+    event Mint(address indexed user, uint256 xautAmount, uint256 grossGram, uint256 fee);
+    event Burn(address indexed user, uint256 gramAmount, uint256 xautAmount);
+
     constructor(address xaut, address treasury) ERC20Permit("GRAM") ERC20("GRAM", "GRAM") {
         XAUT = xaut;
         TREASURY = treasury;
