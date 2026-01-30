@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {GRAM} from "../src/GRAM.sol";
+import {console2} from "forge-std/console2.sol";
 import {MockXAUT} from "./MockXAUT.sol";
 
 contract GRAMTest is Test {
@@ -10,6 +11,9 @@ contract GRAMTest is Test {
     MockXAUT public xaut;
 
     address public constant TREASURY = 0x300Df392cE8910E0E4D42C6ecb9bA1a8b19bAdF0;
+
+    event Mint(address indexed user, uint256 xautAmount, uint256 grossGram, uint256 fee);
+    event Burn(address indexed user, uint256 gramAmount, uint256 xautAmount);
 
     address public user;
     address public user2;
@@ -130,5 +134,53 @@ contract GRAMTest is Test {
         vm.expectRevert();
         vm.prank(user);
         gram.burn(gramAmount);
+    }
+
+    function testRevertZeroMint() public {
+        vm.expectRevert(GRAM.ZeroMint.selector);
+        gram.mint(0);
+    }
+
+    function testRevertZeroBurn() public {
+        vm.expectRevert(GRAM.ZeroBurn.selector);
+        gram.burn(0);
+    }
+
+    function testMintEvent() public {
+        uint256 xautAmount = 1e8;
+        uint256 expectedGram = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+        uint256 fee = expectedGram * FEE_BASIS_POINTS / FEE_DENOMINATOR;
+
+        xaut.mint(user, xautAmount);
+        vm.prank(user);
+        xaut.approve(address(gram), xautAmount);
+
+        vm.expectEmit();
+        emit Mint(user, xautAmount, expectedGram, fee);
+
+        vm.prank(user);
+        gram.mint(xautAmount);
+    }
+
+    function testBurnEvent() public {
+        uint256 xautAmount = 1e8;
+        uint256 gramAmount = xautAmount * CONVERSION_RATE / 10**XAUT_DECIMALS;
+
+        xaut.mint(user, xautAmount);
+        vm.prank(user);
+        xaut.approve(address(gram), xautAmount);
+
+        vm.prank(user);
+        gram.mint(xautAmount);
+
+        uint256 fee = gramAmount * FEE_BASIS_POINTS / FEE_DENOMINATOR;
+        uint256 netGram = gramAmount - fee;
+        uint256 expectedXaut = (netGram * 10**XAUT_DECIMALS + CONVERSION_RATE - 1) / CONVERSION_RATE;
+
+        vm.expectEmit();
+        emit Burn(user, netGram, expectedXaut);
+
+        vm.prank(user);
+        gram.burn(netGram);
     }
 }
