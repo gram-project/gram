@@ -183,4 +183,50 @@ contract GRAMTest is Test {
         vm.prank(user);
         gram.burn(netGram);
     }
+
+    function testFuzz_SolvencyInvariant(uint256 xautAmount) public {
+        xautAmount = bound(xautAmount, 1e8, 1e26);
+        xaut.mint(user, xautAmount);
+        vm.prank(user);
+        xaut.approve(address(gram), xautAmount);
+        vm.prank(user);
+        gram.mint(xautAmount);
+        uint256 gramBalance = gram.balanceOf(user);
+        uint256 xautReserve = xaut.balanceOf(address(gram));
+        uint256 gramSupply = gram.totalSupply();
+        assertGe(xautReserve, gramSupply);
+        vm.prank(user);
+        gram.burn(gramBalance);
+        assertGe(xaut.balanceOf(user), 0);
+    }
+
+    function testFuzz_RoundingProfitToProtocol(uint256 gramAmount) public {
+        gramAmount = bound(gramAmount, 1, 1e30);
+        xaut.mint(user, 1e30);
+        vm.prank(user);
+        xaut.approve(address(gram), 1e30);
+        vm.prank(user);
+        gram.mint(1e30);
+        uint256 userXautBefore = xaut.balanceOf(user);
+        vm.prank(user);
+        gram.burn(gramAmount);
+        uint256 userXautAfter = xaut.balanceOf(user);
+        uint256 xautReceived = userXautAfter - userXautBefore;
+        uint256 exactAmount = gramAmount * 1e8 / CONVERSION_RATE;
+        assertLe(xautReceived, exactAmount);
+    }
+
+    function testFuzz_MaximumMintBurnCycle(uint256 xautAmount) public {
+        xautAmount = bound(xautAmount, 1e8, type(uint256).max / CONVERSION_RATE / 2);
+        xaut.mint(user, xautAmount);
+        vm.prank(user);
+        xaut.approve(address(gram), xautAmount);
+        vm.prank(user);
+        gram.mint(xautAmount);
+        uint256 gramBalance = gram.balanceOf(user);
+        vm.prank(user);
+        gram.burn(gramBalance);
+        assertEq(gram.balanceOf(user), 0);
+        assertGe(xaut.balanceOf(user), 0);
+    }
 }
