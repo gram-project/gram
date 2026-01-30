@@ -42,5 +42,6 @@ contract GRAM is ERC20Permit {
 
         _burn(msg.sender, gramAmount);
         IERC20(XAUT).transfer(msg.sender, xautAmount);
+        emit Burn(msg.sender, gramAmount, xautAmount);
     }
 }
