@@ -32,6 +32,10 @@ Users burn GRAM to redeem XAUT. Floor division ensures protocol solvency.
 
 The `updateDecimals()` function is permissionless and fetches XAUT decimals dynamically from the token. This allows the contract to adapt if XAUT's decimal representation changes.
 
+## Contingency: Underlying Asset Migration
+
+If Tether (XAUT) exhibits behavior that compromises the trustlessness of the system (censorship, fractional reserves, or insolvency), GRAM will migrate to v2. The v2 contract will use an alternative gold-backed token as the underlying asset. Users will be able to migrate their GRAM v1 tokens to v2 through a trustless migration process. The migration details will be published at the time of migration.
+
 ## Parameters
 
 | Parameter | Value | Description |
