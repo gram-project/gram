@@ -33,6 +33,7 @@ contract GRAM is ERC20Permit {
         IERC20(XAUT).transferFrom(msg.sender, address(this), xautAmount);
         _mint(msg.sender, netGram);
         _mint(TREASURY, fee);
+        emit Mint(msg.sender, xautAmount, grossGram, fee);
     }
 
     function burn(uint256 gramAmount) external {
