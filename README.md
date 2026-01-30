@@ -18,7 +18,7 @@ All critical parameters are defined as constants at deployment.
 
 ### Minting (XAUT to GRAM)
 
-Users deposit XAUT and receive GRAM at a fixed conversion rate. A 0.05% fee is deducted and sent to the treasury. Fees fund Dwarf Systems development and security operations. All treasury utilization is trackable on-chain via the multisig.
+Users deposit XAUT and receive GRAM at a fixed conversion rate. A 0.05% fee is deducted and sent to the treasury. The fee encourages gold usage over fiat currency for payments and savings. Fees fund Dwarf Systems development and security operations. All treasury utilization is trackable on-chain via the multisig.
 
 ```
 1 XAUT = 31,103.4768 GRAM (1 troy oz = 31.1034768 grams per International Yard and Pound Agreement, 1959)
