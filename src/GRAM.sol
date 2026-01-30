@@ -8,12 +8,12 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 contract GRAM is ERC20Permit {
     using SafeERC20 for IERC20;
 
-    address private immutable XAUT;
-    address private immutable TREASURY;
+    address public immutable XAUT;
+    address public immutable TREASURY;
 
-    uint256 private constant CONVERSION_RATE = 31103476800000000000;
-    uint256 private constant FEE_BASIS_POINTS = 5;
-    uint256 private constant FEE_DENOMINATOR = 10000;
+    uint256 public constant CONVERSION_RATE = 31103476800000000000;
+    uint256 public constant FEE_BASIS_POINTS = 5;
+    uint256 public constant FEE_DENOMINATOR = 10000;
 
     error ZeroMint();
     error ZeroBurn();
