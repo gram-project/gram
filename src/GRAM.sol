@@ -3,8 +3,11 @@ pragma solidity ^0.8.13;
 
 import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract GRAM is ERC20Permit {
+    using SafeERC20 for IERC20;
+
     address private immutable XAUT;
     address private immutable TREASURY;
 
@@ -33,7 +36,7 @@ contract GRAM is ERC20Permit {
         uint256 fee = grossGram * FEE_BASIS_POINTS / FEE_DENOMINATOR;
         uint256 netGram = grossGram - fee;
 
-        IERC20(XAUT).transferFrom(msg.sender, address(this), xautAmount);
+        IERC20(XAUT).safeTransferFrom(msg.sender, address(this), xautAmount);
         _mint(msg.sender, netGram);
         _mint(TREASURY, fee);
         emit Mint(msg.sender, xautAmount, grossGram, fee);
@@ -47,7 +50,7 @@ contract GRAM is ERC20Permit {
         uint256 xautAmount = gramAmount * 10**XAUT_DECIMALS / CONVERSION_RATE;
 
         _burn(msg.sender, gramAmount);
-        IERC20(XAUT).transfer(msg.sender, xautAmount);
+        IERC20(XAUT).safeTransfer(msg.sender, xautAmount);
         emit Burn(msg.sender, gramAmount, xautAmount);
     }
 }
